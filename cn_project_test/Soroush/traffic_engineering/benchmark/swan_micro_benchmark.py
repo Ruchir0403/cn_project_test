@@ -2,6 +2,7 @@ import sys
 sys.path.append(r"D:\cn_project_test\Soroush\traffic_engineering")
 sys.path.append(r"D:\cn_project_test\Soroush")
 import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import numpy as np
 # sys.path.append(os.path.abspath(os.path.join('..')))
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "./../")))
@@ -13,23 +14,23 @@ from ncflow.lib.problem import Problem
 
 TM_MODEL_LIST = [
     'uniform',
-    'bimodal',
-    'gravity',
-    'poisson-high-inter',
-    'poisson-high-intra',
+    # 'bimodal',
+    # 'gravity',
+    # 'poisson-high-inter',
+    # 'poisson-high-intra',
 ]
 TOPO_NAME_LIST = [
     'Uninett2010.graphml',
     # 'Cogentco.graphml',
     # 'GtsCe.graphml',
-    'UsCarrier.graphml',
-    'Colt.graphml',
+    # 'UsCarrier.graphml',
+    # 'Colt.graphml',
     # 'TataNld.graphml',
     # 'Kdl.graphml',
 ]
 
 # num_path_list = [4, 16]
-mcf_grb_method = [0, 1, 2]
+mcf_grb_method = [0]
 num_path_list = [16]
 # num_path_list = [4]
 link_cap = 1000.0
@@ -39,7 +40,7 @@ log_file = f"../outputs/swan_{fid}.txt"
 log_folder_flows = f"../outputs/swan_{fid}/"
 alpha = 2
 U = 0.1
-num_scenario_per_topo_traffic = 2
+num_scenario_per_topo_traffic = 5
 
 if __name__ == '__main__':
     for num_paths in num_path_list:

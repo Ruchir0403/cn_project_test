@@ -6,6 +6,8 @@ from utilities import utils, constants
 
 
 def is_topo_traffic_valid(fname, valid_topo_traffic_list):
+    if fname is None:
+        return False
     if valid_topo_traffic_list == "*":
         return True
     for topo_name, tm_name in valid_topo_traffic_list:
@@ -45,6 +47,8 @@ def get_output_pop_run_time(approach_name, run_time_dict, pop_always_key_list, p
 
 
 def parse_line(line, dir_name, approach_name, is_approx, approach_to_valid_for_run_time, topo_name_to_approx_param=None):
+    if ")" not in line:
+        return None, 0, 0, 0.0, 0.0, None, False
     model_param, other_param = line.split(")")
     flow_rate_file_name = dir_name + "/{}_per_path_flow.pickle"
     run_time_dict_file_name = dir_name + "/{}_run_time_dict.pickle"
@@ -56,27 +60,38 @@ def parse_line(line, dir_name, approach_name, is_approx, approach_to_valid_for_r
 
     other_param = other_param[1:]
     if is_approx:
+        if "Uninett2010" in topo_name:
+            topo_name = "'Uninett2010.graphml'"
+        elif "UsCarrier" in topo_name:
+            topo_name = "'UsCarrier.graphml'"
+        elif "Colt" in topo_name:
+            topo_name = "'Colt.graphml'"
         desired_num_iter_approx, desired_num_iter_bet = topo_name_to_approx_param[topo_name]
-        try:
-            num_paths, num_iter_approx, total_flow, run_time, detailed_per_flow_file = other_param.split(",")
+        vals = other_param.split(",")
+        if len(vals) == 4:
+            num_paths, total_flow, run_time, detailed_per_flow_file = vals
+            num_iter_approx = desired_num_iter_approx
             num_iter = (num_iter_approx)
-        except ValueError:
-            num_paths, num_iter_approx, num_iter_bet, total_flow, run_time, detailed_per_flow_file = other_param.split(",")
+        elif len(vals) == 5:
+            num_paths, num_iter_approx, total_flow, run_time, detailed_per_flow_file = vals
+            num_iter = (num_iter_approx)
+        else:
+            num_paths, num_iter_approx, num_iter_bet, total_flow, run_time, detailed_per_flow_file = vals
             num_iter = (num_iter_approx, num_iter_bet)
             if approach_name != constants.APPROX and \
                     (int(num_iter_approx) != desired_num_iter_approx or int(num_iter_bet) != desired_num_iter_bet):
                 valid = False
             print(num_iter_approx, num_iter_bet)
         print(detailed_per_flow_file)
-        fid_to_rate_mapping_file_name = flow_rate_file_name.format(detailed_per_flow_file[1:-1])
-        run_time_dict = utils.read_pickle_file(run_time_dict_file_name.format(detailed_per_flow_file[1:-1]))
-        output_run_time = get_output_run_time(approach_name, run_time_dict, approach_to_valid_for_run_time)
+        fid_to_rate_mapping_file_name = flow_rate_file_name.format(detailed_per_flow_file.strip())
+        # run_time_dict = utils.read_pickle_file(run_time_dict_file_name.format(detailed_per_flow_file.strip()))
+        # output_run_time = get_output_run_time(approach_name, run_time_dict, approach_to_valid_for_run_time)
+        output_run_time = float(run_time)
         return traffic_file, int(num_paths), num_iter, float(total_flow), output_run_time, fid_to_rate_mapping_file_name, valid
 
     num_paths, total_flow, run_time, detailed_per_flow_file = other_param.split(",")
-    fid_to_rate_mapping_file_name = flow_rate_file_name.format(detailed_per_flow_file[:-1])
-    run_time_dict = utils.read_pickle_file(run_time_dict_file_name.format(detailed_per_flow_file[:-1]))
-    output_run_time = get_output_run_time(approach_name, run_time_dict, approach_to_valid_for_run_time)
+    fid_to_rate_mapping_file_name = flow_rate_file_name.format(detailed_per_flow_file.strip())
+    output_run_time = float(run_time)
     return traffic_file, int(num_paths), float(total_flow), output_run_time, fid_to_rate_mapping_file_name
 
 
@@ -89,7 +104,7 @@ def get_total_thru_run_time_dict_approx(approach_name, dir_name, valid_topo_traf
         for l in fp.readlines():
             output_line = parse_line(l, dir_name, approach_name, True, approach_to_valid_for_run_time, topo_name_to_approx_param)
             traffic_file, num_paths, num_iter, total_flow, run_time, fid_to_rate_mapping_file_name, valid = output_line
-            if not is_topo_traffic_valid(traffic_file, valid_topo_traffic_list) or not valid:
+            if not valid or not is_topo_traffic_valid(traffic_file, valid_topo_traffic_list):
                 print(f"skipping ${traffic_file}$ either topo or traffic not valid!!")
                 continue
             if num_paths not in total_thru_dict:
@@ -113,6 +128,8 @@ def get_total_thru_run_time_dict(approach_name, dir_name, valid_topo_traffic_lis
     with open(dir_name + ".txt", "r") as fp:
         for l in fp.readlines():
             output_line = parse_line(l, dir_name, approach_name, False, approach_to_valid_for_run_time)
+            if len(output_line) != 5:
+                continue
             traffic_file, num_paths, total_flow, run_time, fid_to_rate_mapping_file_name = output_line
             if not is_topo_traffic_valid(traffic_file, valid_topo_traffic_list):
                 print(f"skipping either topo or traffic not valid!!")

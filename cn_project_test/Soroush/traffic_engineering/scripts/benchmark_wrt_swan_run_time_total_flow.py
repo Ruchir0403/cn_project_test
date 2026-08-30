@@ -20,45 +20,9 @@ from scripts import benchmark_plot_utils
 # swan_log_file = "../outputs/swan_2022_03_28_10_42_02_44c512d6.txt"
 
 approach_to_log_dir_mapping = {
-    # constants.APPROX: [("../outputs/approx_2022_04_08_01_56_20_9c3cc88d", 1)],
-    # constants.APPROX_MCF: [("../outputs/approx_mcf_2022_04_08_18_28_40_528acb29", 1)],
-    # constants.APPROX_BET: [("../outputs/approx_bet_2022_04_10_10_12_57_f694013c", 1)],
-    # constants.APPROX_BET_MCF_BIASED: [("../outputs/approx_bet_biased_mcf_2022_04_28_22_05_41_992b96ba", 1)],
-    # constants.APPROX_BET_MCF: [("../outputs/approx_bet_mcf_2022_04_10_12_49_24_b64bd9fb", 1)],
-    # constants.APPROX_BET_MCF: [("../outputs/approx_bet_mcf_2022_05_15_16_13_34_987c39c9", 1)],
-    # constants.NEW_APPROX: [("../outputs/new_approx_2022_07_10_12_18_18_09a71814", 0)],
-    # constants.APPROX_BET_MCF: [("../outputs/approx(1)_bet(10)_mcf_2022_05_16_04_20_06_14cf9ecc", 1),
-    #                            ("../outputs/approx(1)_bet(10)_mcf_2022_05_22_23_36_38_ecf2c718", 1)],
-    # constants.DANNA: [("../outputs/danna_practical_2022_04_05_11_21_52_5a365c0f", 0),
-    #                   ("../outputs/danna_practical_2022_04_08_02_34_55_ed6031ff", 0),
-    #                   ("../outputs/danna_practical_2022_05_17_10_02_17_b535e7d3", 0),
-    #                   ("../outputs/danna_practical_2022_05_20_20_22_39_63efe481", 0),
-    #                   ("../outputs/danna_practical_2022_05_21_18_46_44_911d1fa3", 0),
-    #                   ("../outputs/danna_practical_2022_05_22_09_17_34_b0c9cdeb", 0)],
-    # constants.SWAN: [("../outputs/swan_2022_04_07_10_22_17_d9a42dd7", 0),
-    #                  ("../outputs/swan_2022_04_08_13_50_46_6bdfa84d", 0),
-    #                  ("../outputs/swan_2022_04_09_23_17_04_1af420da", 0),
-    #                  ("../outputs/swan_2022_05_21_08_57_09_81eae09f", 0)],
-    constants.APPROX: [("../outputs/approx(1)_2022_08_26_08_25_54_0691655a", 1)],
-    constants.APPROX_BET: [
-                #("../outputs/approx(1)_bet_2022_08_27_01_50_46_4284934e", 1),
-                #("../outputs/approx(1)_bet_2022_09_06_18_58_51_9f5810ed", 1),
-                ("../outputs/heuristic_2022_09_15_06_11_13_7a056142", 1)
-    ],
-    constants.APPROX_BET_MCF: [
-                #("../outputs/approx(1)_bet(10)_mcf_2022_09_03_12_39_08_e0e2b482", 1),
-                #("../outputs/approx(1)_bet(20)_mcf_2022_09_06_20_44_22_b768b3f8", 1),
-                ("../outputs/Equi-depth binner_2022_09_17_00_36_05_75d6288e", 1)
-    ],
-    constants.NEW_APPROX: [("../outputs/geometric_binner_2022_08_25_06_02_02_72f6231f", 0)],
-    constants.DANNA: [("../outputs/danna_practical_2022_08_16_17_13_19_dc44cf7e", 0),
-                      ("../outputs/danna_practical_2022_08_16_22_22_21_6afe1d48", 0)],
-    constants.SWAN: [("../outputs/swan_2022_08_23_07_06_01_47c2318f", 0)],
-    constants.ONE_WATERFILLING: [("../outputs/one_water_filling_2022_08_26_03_45_36_08443d49", 0)]
-    # constants.ONE_WATERFILLING: [("../outputs/one_water_2022_04_08_00_28_28_45cc389d", 0),
-    #                              ("../outputs/one_water_2022_04_08_15_37_42_4d1f63ed", 0)]
+    constants.APPROX: [("../outputs/swan_2026_08_23_20_47_29_a9abd5a5", 1)],
+    constants.SWAN: [("../outputs/swan_2026_08_23_20_47_29_a9abd5a5", 0)]
 }
-
 approach_to_valid_for_run_time = {
     constants.ONE_WATERFILLING: [
         # "model",
@@ -109,9 +73,9 @@ approach_to_valid_for_run_time = {
 fig_dir = "../figs/"
 utils.ensure_dir(fig_dir)
 
-total_flow_baseline = constants.DANNA
+total_flow_baseline = constants.SWAN
 assert total_flow_baseline in approach_to_log_dir_mapping
-fairness_baseline = constants.DANNA
+fairness_baseline = constants.SWAN
 assert fairness_baseline in approach_to_log_dir_mapping
 run_time_baseline = constants.SWAN
 assert run_time_baseline in approach_to_log_dir_mapping
@@ -337,7 +301,7 @@ for num_paths in NUM_PATH_LIST:
 
 
 fairness_baseline_fname_dict = approach_to_fid_to_rate_fname_mapping[fairness_baseline]
-
+sys.exit(0)
 print("======================== Fairness Analysis")
 approach_to_fairness_mapping = dict()
 for num_paths in NUM_PATH_LIST:
